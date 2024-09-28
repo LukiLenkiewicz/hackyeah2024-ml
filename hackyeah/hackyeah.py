@@ -1,6 +1,7 @@
 import os
+import json
 from dotenv import load_dotenv
-from scrapegraphai.graphs import SmartScraperGraph
+import concurrent.futures
 
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import PromptTemplate
@@ -8,31 +9,18 @@ from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_community.chat_message_histories import ChatMessageHistory
 
+from chains.decide import decide
+from chains.rank_urls import get_urls
+from chains.summary_html import summary_html_chain
+from get_website_text import get_website_text
+from general_scraping import find_subsites_with_info
+
 
 load_dotenv()
 
 openai_api_key = os.getenv("OPENAI_APIKEY")
 
-graph_config = {
-    "llm": {
-        "api_key": openai_api_key,
-        "model": "openai/gpt-4o-mini",
-    },
-    "verbose": True,
-    "headless": True,
-}
-
 question = "Jakie są szpitale w Krakowie?"
-
-smart_scraper_graph = SmartScraperGraph(
-    prompt=question,
-    source="https://www.krakow.pl/",
-    config=graph_config,
-)
-
-result = smart_scraper_graph.run()
-# url = result["url"]
-print(result)
 
 
 chat = ChatOpenAI(
@@ -62,17 +50,51 @@ hack_yeah_chain = RunnableWithMessageHistory(
     history_messages_key="chat_history",
 )
 
-# example usage
 
-# prompt_template = PromptTemplate.from_template(
-#     "Twoim zadaniem jest analiza strony pod adresem {url} na podstawie poniższego kodu HTML. Użytkownik zadał następujące pytanie: {question}. Korzystając ze struktury HTML, wyjaśnij krok po kroku, jak użytkownik może wykonać tę akcję na stronie, odnosząc się do konkretnych elementów (np. formularzy, przycisków) w kodzie HTML.\n\nHTML:\n{html}"
-# )
+prompt_template = PromptTemplate.from_template(
+    "Twoim zadaniem jest analiza strony pod adresem {url} na podstawie poniższego kodu HTML. Użytkownik zadał następujące pytanie: {question}. Korzystając ze struktury HTML, wyjaśnij krok po kroku, jak użytkownik może wykonać tę akcję na stronie, odnosząc się do konkretnych elementów (np. formularzy, przycisków) w kodzie HTML.\n\nHTML:\n{html}"
+)
 
-# formatted_prompt = prompt_template.format(
-#     url=url, question=question, html=fetch_html(url)
-# )
 
-# nl_ans = hack_yeah_chain.invoke(
-#     {"input": formatted_prompt}, {"configurable": {"session_id": "unused"}}
-# )
-# print(nl_ans.content)
+def find_url(base_url, question):
+    # Get content from the base URL and make the decision
+    url = base_url
+    content = get_website_text(url)
+    payload = decide(question=question, content=content)
+    decision = json.loads(payload)["answer"]
+
+    # If the decision is True, return the result
+    if decision:
+        return hack_yeah_chain.invoke(
+            {"url": url, "question": question, "html": content}
+        )
+
+    # If decision is False, find subsites and search in parallel
+    sub_urls = find_subsites_with_info(url)
+    relevant_urls = get_urls(question, sub_urls)
+
+    def process_url(sub_url):
+        """Helper function to process each URL in parallel."""
+        content = get_website_text(sub_url)
+        payload = decide(question=question, content=content)
+        decision = json.loads(payload)["answer"]
+        if decision:
+            return hack_yeah_chain.invoke(
+                {"url": sub_url, "question": question, "html": content}
+            )
+        else:
+            # Recursively search on this URL if decision is False
+            return find_url(sub_url, question)
+
+    # Use ThreadPoolExecutor to process multiple URLs in parallel
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        futures = {
+            executor.submit(process_url, sub_url): sub_url for sub_url in relevant_urls
+        }
+        for future in concurrent.futures.as_completed(futures):
+            result = future.result()
+            if result:  # Return if any URL provides the correct decision
+                return result
+
+    # If no valid decision is found after all URLs are processed
+    return None
