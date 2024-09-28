@@ -1,4 +1,5 @@
 import requests
+from bs4 import BeautifulSoup
 
 
 def get_website_content(url):
@@ -6,7 +7,9 @@ def get_website_content(url):
         response = requests.get(url)
 
         if response.status_code == 200:
-            return response.text
+            soup = BeautifulSoup(response.text, "html.parser")
+            body_content = soup.body
+            return str(body_content)
         else:
             return f"Error: Received status code {response.status_code}"
     except requests.exceptions.RequestException as e:
