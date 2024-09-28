@@ -35,7 +35,10 @@ result = smart_scraper_graph.run()
 url = result["url"]
 
 
-chat = ChatOpenAI(model="gpt-3.5-turbo-1106")
+chat = ChatOpenAI(
+    model="gpt-3.5-turbo-1106",
+    api_key=openai_api_key,
+)
 
 prompt = ChatPromptTemplate.from_messages(
     [
