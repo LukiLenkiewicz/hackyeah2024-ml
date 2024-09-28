@@ -1,12 +1,12 @@
 import logging
-logging.getLogger("requests").setLevel(logging.ERROR)
-logging.getLogger("urllib3.connectionpool").setLevel(logging.ERROR)
-logging.getLogger("bs4").setLevel(logging.ERROR)
-
 from bs4 import BeautifulSoup
 import requests
 from urllib.parse import urljoin, urlparse
 import pprint
+
+logging.getLogger("requests").setLevel(logging.ERROR)
+logging.getLogger("urllib3.connectionpool").setLevel(logging.ERROR)
+logging.getLogger("bs4").setLevel(logging.ERROR)
 
 cookies = dict(language='pl_PL')
 
@@ -36,5 +36,7 @@ def find_subsites_with_info(url):
     subsites = [{'url': subsite[0], 'description': f"{subsite[2]} - {subsite[1]}"} for subsite in subsites]
     return list(subsites)
 
-subsites = find_subsites_with_info("https://www.krakow.pl/")
-pprint.pprint(subsites)
+
+if __name__ == "__main__":
+    subsites = find_subsites_with_info("https://www.krakow.pl/")
+    pprint.pprint(subsites)
