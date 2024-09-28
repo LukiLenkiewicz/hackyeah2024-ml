@@ -1,10 +1,11 @@
 from dotenv import load_dotenv
 
 import fire
-from hackyeah.structured_llms import structured_llm, utility_check_llm
 
-from hackyeah.scraping import get_soup, get_href_content, get_website_text
-from hackyeah.templates import TEMPLATE, UTILITY_TEMPLATE
+from hackyeah.structured_llms import structured_llm, utility_check_llm
+from hackyeah.scraping import get_soup, get_href_content
+from hackyeah.utils.templates import TEMPLATE, UTILITY_TEMPLATE
+
 
 load_dotenv()
 
