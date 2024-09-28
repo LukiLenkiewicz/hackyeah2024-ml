@@ -10,6 +10,7 @@ description = "HackYeah 2024"
 requires-python = ">= 3.8, <= 3.12"
 
 dependencies = [
+    "fastapi==0.112.2",
     "fire == 0.6.0",
     "numpy ~= 1.26.4",
     "pandas ~= 2.2.2",

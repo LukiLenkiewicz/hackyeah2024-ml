@@ -11,7 +11,6 @@ from langchain_community.chat_message_histories import ChatMessageHistory
 
 from chains.decide import decide
 from chains.rank_urls import get_urls
-from chains.summary_html import summary_html_chain
 from get_website_text import get_website_text
 from general_scraping import find_subsites_with_info
 
@@ -53,51 +52,61 @@ prompt_template = PromptTemplate.from_template(
 )
 
 
-def find_url(base_url, question):
-    # Get content from the base URL and make the decision
-    url = base_url
-    content = get_website_text(url)
-    payload = decide(question=question, content=content)
-    decision = json.loads(payload)["answer"]
-    print(decision)
+class HackYeahClient:
+    def __init__(self, url, chain):
+        self.url = url
+        self.chain = chain
 
-    # If the decision is True, return the result
-    if decision:
-        return hack_yeah_chain.invoke(
-            {"input": prompt_template.format(url=url, question=question, html=content)},
-            {"configurable": {"session_id": "unused"}},
-        )
-
-    # If decision is False, find subsites and search in parallel
-    sub_urls = find_subsites_with_info(url)
-    relevant_urls = get_urls(question, sub_urls)
-
-    def process_url(sub_url):
-        """Helper function to process each URL in parallel."""
-        content = get_website_text(sub_url)
+    def find_url(self, question):
+        # Get content from the base URL and make the decision
+        url = self.url
+        content = get_website_text(url)
         payload = decide(question=question, content=content)
         decision = json.loads(payload)["answer"]
+        print(decision)
+
+        # If the decision is True, return the result
         if decision:
-            return hack_yeah_chain.invoke(
+            return self.chain.invoke(
                 {
                     "input": prompt_template.format(
-                        url=sub_url, question=question, html=content
+                        url=url, question=question, html=content
                     )
                 },
                 {"configurable": {"session_id": "unused"}},
             )
 
-        else:
-            # Recursively search on this URL if decision is False
-            return find_url(sub_url, question)
+        # If decision is False, find subsites and search in parallel
+        sub_urls = find_subsites_with_info(url)
+        relevant_urls = get_urls(question, sub_urls)
 
-    with concurrent.futures.ThreadPoolExecutor() as executor:
-        futures = {
-            executor.submit(process_url, sub_url): sub_url for sub_url in relevant_urls
-        }
-        for future in concurrent.futures.as_completed(futures):
-            result = future.result()
-            if result:
-                return result
+        def process_url(sub_url):
+            """Helper function to process each URL in parallel."""
+            content = get_website_text(sub_url)
+            payload = decide(question=question, content=content)
+            decision = json.loads(payload)["answer"]
+            if decision:
+                return self.chain.invoke(
+                    {
+                        "input": prompt_template.format(
+                            url=sub_url, question=question, html=content
+                        )
+                    },
+                    {"configurable": {"session_id": "unused"}},
+                )
 
-    return None
+            else:
+                # Recursively search on this URL if decision is False
+                return self.find_url(sub_url, question)
+
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            futures = {
+                executor.submit(process_url, sub_url): sub_url
+                for sub_url in relevant_urls
+            }
+            for future in concurrent.futures.as_completed(futures):
+                result = future.result()
+                if result:
+                    return result
+
+        return None
