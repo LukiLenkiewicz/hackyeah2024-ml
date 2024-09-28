@@ -23,16 +23,17 @@ graph_config = {
     "headless": True,
 }
 
-question = "Na jakim adresie url zapłacę PIT?"
+question = "Jakie są szpitale w Krakowie?"
 
 smart_scraper_graph = SmartScraperGraph(
     prompt=question,
-    source="https://wroclaw.sa.gov.pl/",
+    source="https://www.krakow.pl/",
     config=graph_config,
 )
 
 result = smart_scraper_graph.run()
-url = result["url"]
+# url = result["url"]
+print(result)
 
 
 chat = ChatOpenAI(
