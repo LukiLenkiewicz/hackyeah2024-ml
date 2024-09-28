@@ -8,7 +8,6 @@ from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_community.chat_message_histories import ChatMessageHistory
 
-from hackyeah.get_website_content import get_website_content
 
 load_dotenv()
 
@@ -73,7 +72,7 @@ hack_yeah_chain = RunnableWithMessageHistory(
 #     url=url, question=question, html=fetch_html(url)
 # )
 
-# nl_ans = chain_with_message_history.invoke(
+# nl_ans = hack_yeah_chain.invoke(
 #     {"input": formatted_prompt}, {"configurable": {"session_id": "unused"}}
 # )
 # print(nl_ans.content)
