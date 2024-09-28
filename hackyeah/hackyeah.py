@@ -9,10 +9,10 @@ from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_community.chat_message_histories import ChatMessageHistory
 
-from chains.decide import decide
-from chains.rank_urls import get_urls
-from get_website_text import get_website_text
-from general_scraping import find_subsites_with_info
+from hackyeah.chains.decide import decide
+from hackyeah.chains.rank_urls import get_urls
+from hackyeah.get_website_text import get_website_text
+from hackyeah.general_scraping import find_subsites_with_info
 
 
 load_dotenv()
@@ -53,9 +53,10 @@ prompt_template = PromptTemplate.from_template(
 
 
 class HackYeahClient:
-    def __init__(self, url, chain):
+    def __init__(self, url, chain, id):
         self.url = url
         self.chain = chain
+        self.id = id
 
     def find_url(self, question):
         # Get content from the base URL and make the decision
@@ -73,7 +74,7 @@ class HackYeahClient:
                         url=url, question=question, html=content
                     )
                 },
-                {"configurable": {"session_id": "unused"}},
+                {"configurable": {"session_id": self.id}},
             )
 
         # If decision is False, find subsites and search in parallel
@@ -92,7 +93,7 @@ class HackYeahClient:
                             url=sub_url, question=question, html=content
                         )
                     },
-                    {"configurable": {"session_id": "unused"}},
+                    {"configurable": {"session_id": self.id}},
                 )
 
             else:
