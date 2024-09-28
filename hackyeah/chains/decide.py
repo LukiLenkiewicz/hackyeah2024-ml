@@ -21,19 +21,16 @@ structured_llm = model.with_structured_output(Decision)
 
 # Template to ask whether the content sufficiently answers the question
 decide_template = """
-Does this text fully and exhaustively provide all the necessary, detailed, and specific information required for the end user to answer the question: {question} with complete certainty, without any ambiguity or need for further clarification?
- 
-Please evaluate whether the answer is explicitly and directly present, including every critical detail needed. If any part of the required information is missing, incomplete, vague, or implied rather than clearly stated, explain why the information is insufficient.
+Does this text contain comprehensive and specific information for the end user to answer the question: {question}?
+Please provide details on whether the answer is directly present, and if not, explain why the information is insufficient.
 
 Return the output in JSON format with two keys:
-1. "reasoning": a detailed explanation of why the content is or is not fully sufficient.
-2. "answer": a boolean that is true only if the content provides a 100% complete and unambiguous answer.
-
+1. "reasoning": a string explaining the reasoning.
+2. "answer": a boolean that is either true or false.
 
 Website Content:
-```
 {html_content}
-```
+
 """
 
 # Create the prompt template from the above decide_template

@@ -23,10 +23,7 @@ openai_api_key = os.getenv("OPENAI_APIKEY")
 question = "Jakie są szpitale w Krakowie?"
 
 
-chat = ChatOpenAI(
-    model="gpt-3.5-turbo-1106",
-    api_key=openai_api_key,
-)
+chat = ChatOpenAI(model="gpt-3.5-turbo-1106", api_key=openai_api_key, temperature=0)
 
 prompt = ChatPromptTemplate.from_messages(
     [
@@ -62,11 +59,13 @@ def find_url(base_url, question):
     content = get_website_text(url)
     payload = decide(question=question, content=content)
     decision = json.loads(payload)["answer"]
+    print(decision)
 
     # If the decision is True, return the result
     if decision:
         return hack_yeah_chain.invoke(
-            {"url": url, "question": question, "html": content}
+            {"input": prompt_template.format(url=url, question=question, html=content)},
+            {"configurable": {"session_id": "unused"}},
         )
 
     # If decision is False, find subsites and search in parallel
@@ -80,21 +79,25 @@ def find_url(base_url, question):
         decision = json.loads(payload)["answer"]
         if decision:
             return hack_yeah_chain.invoke(
-                {"url": sub_url, "question": question, "html": content}
+                {
+                    "input": prompt_template.format(
+                        url=sub_url, question=question, html=content
+                    )
+                },
+                {"configurable": {"session_id": "unused"}},
             )
+
         else:
             # Recursively search on this URL if decision is False
             return find_url(sub_url, question)
 
-    # Use ThreadPoolExecutor to process multiple URLs in parallel
     with concurrent.futures.ThreadPoolExecutor() as executor:
         futures = {
             executor.submit(process_url, sub_url): sub_url for sub_url in relevant_urls
         }
         for future in concurrent.futures.as_completed(futures):
             result = future.result()
-            if result:  # Return if any URL provides the correct decision
+            if result:
                 return result
 
-    # If no valid decision is found after all URLs are processed
     return None

@@ -21,7 +21,7 @@ structured_llm = model.with_structured_output(RankedURLs)
 rank_url_template = """
 Mam listę krotek zawierających informacje o podstronach pewnej strony internetowej w formacie {sub_urls}, gdzie każda krotka zawiera: adres URL podstrony, krótki opis oraz tytuł linku. Użytkownik zadał pytanie: '{question}'.
 
-Zwróć tylko 3 najbardziej związane podstrony z zapytaniem, biorąc pod uwagę:
+Zwróć tylko 2 najbardziej związane podstrony z zapytaniem, biorąc pod uwagę:
 1. Zawartość opisu i tytułu linku, które powinny zawierać słowa kluczowe związane z pytaniem.
 2. Tematyka podstrony, która powinna odpowiadać pytaniu użytkownika.
 
