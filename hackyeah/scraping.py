@@ -4,13 +4,20 @@ import requests
 from urllib.parse import urljoin, urlparse
 import pprint
 
-logging.getLogger("requests").setLevel(logging.ERROR)
-logging.getLogger("urllib3.connectionpool").setLevel(logging.ERROR)
-logging.getLogger("bs4").setLevel(logging.ERROR)
-
 cookies = dict(language='pl_PL')
 
+
 def find_subsites_with_info(url):
+    soup = get_soup(url)
+    website_text = get_website_text(soup)
+
+    elements = soup.find_all('a', href=True)
+
+    subsites = get_href_content(url, elements)
+    return list(subsites), website_text
+
+
+def get_soup(url):
     try:
         response = requests.get(url, cookies=cookies)
         response.raise_for_status()
@@ -18,9 +25,21 @@ def find_subsites_with_info(url):
     except (requests.RequestException, Exception) as e:
         print(f"Failed to access {url}: {e}")
         return
-    
-    elements = soup.find_all('a', href=True)
-    
+
+    return soup
+
+
+def get_website_text(soup):
+    tag = soup.body
+ 
+    website_text = ''
+    for string in tag.strings:
+        if string.strip():
+            website_text += string.strip() + '\n'
+    return website_text        
+
+
+def get_href_content(url, elements):
     subsites = set()
     for element in elements:
         href = element['href']
@@ -34,9 +53,4 @@ def find_subsites_with_info(url):
         subsites.add((link, text, title))
         
     subsites = [{'url': subsite[0], 'description': f"{subsite[2]} - {subsite[1]}"} for subsite in subsites]
-    return list(subsites)
-
-
-if __name__ == "__main__":
-    subsites = find_subsites_with_info("https://www.krakow.pl/")
-    pprint.pprint(subsites)
+    return subsites
