@@ -1,5 +1,4 @@
 import streamlit as st
-import ollama
 
 # from scripts folder run the command below
 # streamlit run app.py

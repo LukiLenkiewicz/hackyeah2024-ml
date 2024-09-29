@@ -1,5 +1,4 @@
 import streamlit as st
-import ollama
 
 custom_css = """
 <style>
@@ -55,23 +54,26 @@ st.title("EasyTalk")
 st.session_state.page_link = st.text_input("Enter a website link")
 
 if st.session_state.page_link:
+    st.session_state.messages = []
+    st.switch_page("pages/chat.py")
+    
+    # TEMP
+    # with st.spinner('Processing ...'):
+    #     st.session_state.messages = []
+    #     initial_message = {"role": "user",
+    #                        "content": f"You have the following link: {st.session_state.page_link}. Briefly tell me what I can find here."}
 
-    with st.spinner('Processing ...'):
-        st.session_state.messages = []
-        initial_message = {"role": "user",
-                           "content": f"You have the following link: {st.session_state.page_link}. Briefly tell me what I can find here."}
+    #     result = ollama.chat(model="llama3", messages=[initial_message])
+    #     response = result["message"]["content"]
 
-        result = ollama.chat(model="llama3", messages=[initial_message])
-        response = result["message"]["content"]
+    #     print(f"Model response {response}")
 
-        print(f"Model response {response}")
+    #     print(f"avatars: {avatars}")
+    #     st.session_state.messages.append({"role": "assistant", "content": response})
+    #     print(f"Messages 2: {st.session_state.messages}")
 
-        print(f"avatars: {avatars}")
-        st.session_state.messages.append({"role": "assistant", "content": response})
-        print(f"Messages 2: {st.session_state.messages}")
-
-    if st.session_state.messages[0]['content']:
-        st.switch_page("pages/chat.py")
+    # if st.session_state.messages[0]['content']:
+    #     st.switch_page("pages/chat.py")
 
 
 

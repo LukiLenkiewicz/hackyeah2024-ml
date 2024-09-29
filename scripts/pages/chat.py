@@ -1,5 +1,5 @@
 import streamlit as st
-import ollama
+from hackyeah.main import pipeline
 
 custom_css = """
 <style>
@@ -63,8 +63,9 @@ if prompt:
     st.session_state.messages.append({"role": "user", "content": prompt})
 
     with st.spinner("Processing ..."):
-        result = ollama.chat(model="llama3", messages=st.session_state.messages)
-        response = result["message"]["content"]
+        url, result = pipeline(st.session_state.page_link, prompt)
+        response = f"""URL: {url}   
+        {result}"""
         with st.chat_message("assistant", avatar=avatars["assistant"]):
             st.markdown(response)
     # response = f"Echoing: {prompt}"
