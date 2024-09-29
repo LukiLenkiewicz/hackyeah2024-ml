@@ -2,26 +2,20 @@
 
 Repository for HackYeah 2024.
 
-### Quick start
-If you want to setup project locally
+## Running our project
 
-1. Create new virtual environment:
+Clone the repository:
+```
+git clone git@github.com:LukiLenkiewicz/hackyeah2024-ml.git
+```
 
-   If you use _conda_
+Install required packages:
+```
+cd hackheah2024-ml
+pip install .
+```
 
-   ```
-   conda create --name your-environment-name python=3.11
-   ```
-
-2. Activate environment
-   ```
-   conda activate your-environment-name
-   ```
-
-3. Install packages
-
-   ```
-   pip install -e .
-   ```
-
-After these steps project scripts are ready to launch
+Run an application
+```
+streamlit run scripts/app.py
+```
