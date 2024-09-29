@@ -14,6 +14,11 @@ custom_css = """
     .stChatMessage.st-emotion-cache-4oy321.eeusbqq4 {
         background-color: #A67153;
     }
+    
+    .stTextInput.e11y4ecf0 {
+        background-color: #255059;
+        padding: 10px;
+    }
 
     [data-baseweb=textarea] {
         color: black;
