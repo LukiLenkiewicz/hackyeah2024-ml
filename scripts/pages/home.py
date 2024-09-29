@@ -33,6 +33,11 @@ custom_css = """
         color: black;
     }
     
+    [data-baseweb=base-input] .st-bc {
+        color: black;
+        cursor: pointer;
+    }
+    
     input {
         background-color: #255059;
         padding: 10px;
