@@ -1,25 +1,55 @@
 import streamlit as st
 import ollama
 
+custom_css = """
+<style>
+
+    /* Custom style for the user chat message */
+    .stChatMessage.eeusbqq4 {
+        background-color: #3E7E8C; /* Light blue background */
+
+    }
+
+    /* Custom style for the avatar */
+    .stChatMessage.st-emotion-cache-4oy321.eeusbqq4 {
+        background-color: #A67153;
+    }
+
+    [data-baseweb=textarea] {
+        color: black;
+        border: 1px solid #024059;
+    }
+
+    [type=textarea] {
+        color: black;
+        caret-color: black;
+    }
+
+    #easytalk {
+        color: black;
+    }
+
+    .stSpinner {
+        color: black;
+    }
+
+    header {
+        color: black;
+    }
+
+</style>
+"""
 
 avatars = {
-    "user": "user", # "../avatars/human.png",
-    "assistant": "assistant" # "../avatars/logo.png",
+    "user": "user",  # "../avatars/human.png",
+    "assistant": "assistant"  # "../avatars/logo.png",
 }
 
-print("Page link", st.session_state.page_link)
+st.markdown(custom_css, unsafe_allow_html=True)
 
-if "messages" not in st.session_state:
-    st.session_state.messages = []
-    initial_message = {"role": "user",
-                       "content": f"You have the following link: {st.session_state.page_link}. Briefly tell me what I can find here."}
-    st.session_state.messages.append(initial_message)
-    print(f"Messages 1: {st.session_state.messages}")
-    result = ollama.chat(model="llama3", messages=st.session_state.messages)
-    response = result["message"]["content"]
-    print(f"avatars: {avatars}")
-    st.session_state.messages.append({"role": "assistant", "content": response})
-    print(f"Messages 2: {st.session_state.messages}")
+st.title("EasyTalk")
+
+print("Page link", st.session_state.page_link)
 
 for message in st.session_state.messages:
     with st.chat_message(message["role"], avatar=avatars[message["role"]]):
