@@ -4,16 +4,6 @@ import ollama
 # from scripts folder run the command below
 # streamlit run app.py
 
-avatars = {
-    "user": ".streamlit/avatars/human.png",
-    "assistant": ".streamlit/avatars/logo.png",
-}
-
-css_classes = {
-    "user": "user-container",
-    "assistant": "assistant-container",
-}
-
 # Define custom CSS for chat message box
 custom_css = """
 <style>
@@ -57,31 +47,9 @@ custom_css = """
 st.title("EasyTalk")
 st.markdown(custom_css, unsafe_allow_html=True)
 
-if "messages" not in st.session_state:
-    st.session_state.messages = []
-    st.session_state.messages.append({"role": "assistant", "content": "Hi, how can I help you?"})
+if "page_link" not in st.session_state:
+    st.switch_page("pages/home.py")
 
-for message in st.session_state.messages:
-    with st.chat_message(message["role"], avatar=avatars[message["role"]]):
-        st.markdown(message['content'])
-
-prompt = st.chat_input("I have a problem with ...")
-
-if prompt:
-
-    with st.chat_message("user", avatar=avatars["user"]) as uchat:
-        st.markdown(prompt)
-    st.session_state.messages.append({"role": "user", "content": prompt})
-
-    with st.spinner("Processing ..."):
-        result = ollama.chat(model="llama3", messages=st.session_state.messages)
-        response = result["message"]["content"]
-        with st.chat_message("assistant", avatar=avatars["assistant"]):
-            st.markdown(response)
-    # response = f"Echoing: {prompt}"
-    # with st.chat_message("assistant"):
-    #     st.markdown(response)
-    st.session_state.messages.append({"role": "assistant", "content": response})
 
 
 
