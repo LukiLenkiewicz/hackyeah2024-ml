@@ -2,21 +2,41 @@ import streamlit as st
 
 custom_css = """
 <style>
-
+    
     /* Custom style for the user chat message */
     .stChatMessage.eeusbqq4 {
         background-color: #3E7E8C; /* Light blue background */
 
     }
-
+    
+    [data-testid=stSidebarNav] {
+        display: none;
+    }
+    
+    [data-testid=stSidebarContent] {
+        background-color: #255059;
+        color: black;
+    }
+    
+    body {
+        color: black;
+    }
+    
     /* Custom style for the avatar */
     .stChatMessage.st-emotion-cache-4oy321.eeusbqq4 {
         background-color: #A67153;
     }
     
-    .stTextInput.e11y4ecf0 {
+    .stTextInput {
         background-color: #255059;
         padding: 10px;
+        color: black;
+    }
+    
+    input {
+        background-color: #255059;
+        padding: 10px;
+        color: black;
     }
 
     [data-baseweb=textarea] {
@@ -45,6 +65,10 @@ custom_css = """
 """
 
 st.markdown(custom_css, unsafe_allow_html=True)
+
+st.sidebar.page_link("pages/chat.py")
+st.sidebar.page_link("pages/home.py")
+
 st.title("EasyTalk")
 st.session_state.page_link = st.text_input("Enter a website link")
 

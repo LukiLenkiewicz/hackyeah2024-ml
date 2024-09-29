@@ -7,7 +7,34 @@ custom_css = """
     /* Custom style for the user chat message */
     .stChatMessage.eeusbqq4 {
         background-color: #3E7E8C; /* Light blue background */
-
+    }
+    
+    
+    
+    .st-emotion-cache-11j9wlh a {
+        color: #DFEEF4;
+        text-decoration: none;
+        font-weight: bold;
+    }
+    
+    [data-testid=stSidebarNav] {
+        display: none;
+    }
+    [data-testid=stSidebarContent] {
+        background-color: #255059;
+        color: black;
+    }
+    a {
+        color: #DFEEF4;
+        text-decoration: none;
+        font-weight: bold;
+    }
+    
+    a:hover a:visited {
+        color: #DFEEF4; 
+        text-decoration:none; 
+        cursor:pointer;  
+        font-weight: bold;
     }
 
     /* Custom style for the avatar */
@@ -46,6 +73,9 @@ avatars = {
 }
 
 st.markdown(custom_css, unsafe_allow_html=True)
+
+st.sidebar.page_link("pages/chat.py")
+st.sidebar.page_link("pages/home.py")
 
 st.title("EasyTalk")
 

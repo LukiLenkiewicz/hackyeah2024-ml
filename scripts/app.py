@@ -3,6 +3,8 @@ import streamlit as st
 # from scripts folder run the command below
 # streamlit run app.py
 
+
+
 # Define custom CSS for chat message box
 custom_css = """
 <style>
@@ -11,6 +13,17 @@ custom_css = """
         background-color: #D8EBF2;
     }
     
+    [data-testid=stSidebarNav] {
+        display: none;
+    }
+    
+    
+    [data-testid=stSidebarContent] {
+        background-color: #255059;
+        color: black;
+    }
+
+
     /* Custom style for the user chat message */
     .stChatMessage.eeusbqq4 {
         background-color: #3E7E8C; /* Light blue background */
@@ -55,6 +68,9 @@ avatars = {
 
 
 st.markdown(custom_css, unsafe_allow_html=True)
+
+st.sidebar.page_link("pages/chat.py")
+st.sidebar.page_link("pages/home.py")
 
 if "page_link" not in st.session_state:
     st.switch_page("pages/home.py")
