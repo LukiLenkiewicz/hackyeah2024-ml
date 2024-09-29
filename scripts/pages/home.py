@@ -75,7 +75,7 @@ st.sidebar.page_link("pages/chat.py")
 st.sidebar.page_link("pages/home.py")
 
 st.title("EasyTalk")
-st.session_state.page_link = st.text_input("Enter a website link")
+st.session_state.page_link = st.text_input("Podaj proszę adres strony internetowej, z której chcesz uzyskać informacje.")
 
 if st.session_state.page_link:
     st.session_state.messages = []

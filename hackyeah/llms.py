@@ -77,12 +77,12 @@ def chat_with_website(url, question):
             "model": "openai/gpt-4o-mini",
         },
         "verbose": False,
-        "headless": False,
+        "headless": True,
     }
 
     # Create the SmartScraperGraph instance
     smart_scraper_graph = SmartScraperGraph(
-        prompt=f"Find some information that will help me answer the question: {question}. Return retrieved information in plain text.",
+        prompt=f"Find some information that will help me answer the question: {question}. Return retrieved information in plain text. If user asks for instructions to complete a task, provide a step-by-step guide, with each step in a new line.",
         source=url,
         config=graph_config
     )

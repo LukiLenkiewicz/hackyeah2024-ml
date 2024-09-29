@@ -66,7 +66,6 @@ avatars = {
     "assistant": "assistant" # "../avatars/logo.png",
 }
 
-
 st.markdown(custom_css, unsafe_allow_html=True)
 
 st.sidebar.page_link("pages/chat.py")
@@ -74,8 +73,3 @@ st.sidebar.page_link("pages/home.py")
 
 if "page_link" not in st.session_state:
     st.switch_page("pages/home.py")
-
-
-
-
-
