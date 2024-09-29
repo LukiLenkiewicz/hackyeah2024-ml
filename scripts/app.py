@@ -5,8 +5,8 @@ import ollama
 # streamlit run app.py
 
 avatars = {
-    "user": "../data/avatars/human.png",
-    "assistant": "../data/avatars/logo.png",
+    "user": ".streamlit/avatars/human.png",
+    "assistant": ".streamlit/avatars/logo.png",
 }
 
 css_classes = {
