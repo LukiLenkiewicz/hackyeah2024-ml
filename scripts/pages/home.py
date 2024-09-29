@@ -44,11 +44,6 @@ custom_css = """
 </style>
 """
 
-avatars = {
-    "user": "user",  # "../avatars/human.png",
-    "assistant": "assistant"  # "../avatars/logo.png",
-}
-
 st.markdown(custom_css, unsafe_allow_html=True)
 st.title("EasyTalk")
 st.session_state.page_link = st.text_input("Enter a website link")

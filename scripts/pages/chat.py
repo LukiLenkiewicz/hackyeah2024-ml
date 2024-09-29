@@ -41,7 +41,7 @@ custom_css = """
 """
 
 avatars = {
-    "user": "user",  # "../avatars/human.png",
+    "user": "human",  # "../avatars/human.png",
     "assistant": "assistant"  # "../avatars/logo.png",
 }
 
@@ -50,6 +50,10 @@ st.markdown(custom_css, unsafe_allow_html=True)
 st.title("EasyTalk")
 
 print("Page link", st.session_state.page_link)
+
+if not st.session_state.messages:
+    with st.chat_message("assistant", avatar=avatars["assistant"]):
+        st.markdown(f"You provided me with: {st.session_state.page_link}\nHi, how can I help you?")
 
 for message in st.session_state.messages:
     with st.chat_message(message["role"], avatar=avatars[message["role"]]):
@@ -63,7 +67,7 @@ if prompt:
     st.session_state.messages.append({"role": "user", "content": prompt})
 
     with st.spinner("Processing ..."):
-        url, result = pipeline(st.session_state.page_link, prompt)
+        url, result =pipeline(st.session_state.page_link, prompt)
         response = f"""URL: {url}   
         {result}"""
         with st.chat_message("assistant", avatar=avatars["assistant"]):

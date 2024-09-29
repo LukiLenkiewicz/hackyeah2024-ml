@@ -6,6 +6,10 @@ import streamlit as st
 # Define custom CSS for chat message box
 custom_css = """
 <style>
+
+    body {
+        background-color: #D8EBF2;
+    }
     
     /* Custom style for the user chat message */
     .stChatMessage.eeusbqq4 {
