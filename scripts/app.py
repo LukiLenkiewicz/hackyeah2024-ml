@@ -1,8 +1,9 @@
 import streamlit as st
-
+from dotenv import load_dotenv
 # from scripts folder run the command below
 # streamlit run app.py
 
+load_dotenv()
 
 
 # Define custom CSS for chat message box
