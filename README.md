@@ -15,6 +15,12 @@ cd hackheah2024-ml
 pip install .
 ```
 
+Create `.env` file and put your OpenAI API key in it e.g.:
+
+```
+OPENAI_API_KEY = "<your api key>"
+```
+
 Run an application
 ```
 streamlit run scripts/app.py
